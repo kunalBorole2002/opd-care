@@ -762,7 +762,10 @@ function serializeConversation(
     durationSeconds: conversation?.durationSeconds ?? 0,
     language: conversation?.language ?? speaker?.language ?? "",
     plainTranscript: conversation?.plainTranscript ?? speaker?.plainTranscript ?? "",
-    audioUrl: conversation?.id ? `/api/visit-conversations/${conversation.id}/audio` : "",
+    audioUrl:
+      conversation?.id && conversation.sizeBytes > 0
+        ? `/api/visit-conversations/${conversation.id}/audio`
+        : "",
     turns: speaker?.turns ?? [],
     warnings: speaker?.warnings ?? [],
     chunks:

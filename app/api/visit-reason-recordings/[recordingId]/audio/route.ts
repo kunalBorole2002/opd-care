@@ -34,6 +34,13 @@ export async function GET(
     return NextResponse.json({ message: "Recording is not available for this doctor." }, { status: 403 });
   }
 
+  if (recording.sizeBytes === 0) {
+    return NextResponse.json(
+      { message: "Audio is unavailable for this transcript-only demo record." },
+      { status: 404 },
+    );
+  }
+
   try {
     const audio = await downloadStorageObject(recording.filePath);
     const range = request.headers.get("range");

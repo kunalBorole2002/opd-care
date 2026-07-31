@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "node prisma/seed.mjs",
+    "db:seed:demo": "node prisma/seed-demo.mjs",
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
@@ -21,10 +22,10 @@
     "lucide-react": "latest",
     "next": "latest",
     "openai": "^6.45.0",
-    "puppeteer": "^25.2.1",
     "qrcode": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "sharp": "0.35.3",
     "tailwind-merge": "latest"
   },
   "devDependencies": {

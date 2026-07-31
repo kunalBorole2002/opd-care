@@ -32,6 +32,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ conv
     return NextResponse.json({ message: "Conversation recording is not available for this doctor." }, { status: 403 });
   }
 
+  if (conversation.sizeBytes === 0) {
+    return NextResponse.json(
+      { message: "Audio is unavailable for this transcript-only demo record." },
+      { status: 404 },
+    );
+  }
+
   try {
     const audio = await downloadStorageObject(conversation.recordingPath);
     const range = request.headers.get("range");
