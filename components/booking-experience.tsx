@@ -22,6 +22,7 @@ import QRCode from "qrcode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getOpdDateKey, getOpdHour, OPD_TIME_ZONE } from "@/lib/opd-slots";
 import { cn } from "@/lib/utils";
 
 type Gender = "Female" | "Male" | "Other";
@@ -168,7 +169,7 @@ export function BookingExperience() {
           (slot) =>
             slot.available &&
             slot.session === selectedPeriod &&
-            new Date(slot.startsAt).getHours() === selectedHour,
+            getOpdHour(slot.startsAt) === selectedHour,
         )
       : false;
 
@@ -730,7 +731,7 @@ function VisitTimeSelection({
               const availableCount = slots.filter(
                 (slot) =>
                   slot.session === selectedPeriodOption.id &&
-                  new Date(slot.startsAt).getHours() === hour &&
+                  getOpdHour(slot.startsAt) === hour &&
                   slot.available,
               ).length;
               const disabled = availableCount === 0;
@@ -1202,6 +1203,7 @@ function formatAddress(location: ClinicLocation) {
 
 function formatSlot(value: string) {
   return new Intl.DateTimeFormat("en-IN", {
+    timeZone: OPD_TIME_ZONE,
     weekday: "short",
     day: "2-digit",
     month: "short",
@@ -1233,7 +1235,7 @@ function getAvailableSlotCountForHour(
     (slot) =>
       getDateKey(slot.startsAt) === dateFilter &&
       slot.session === period &&
-      new Date(slot.startsAt).getHours() === hour &&
+      getOpdHour(slot.startsAt) === hour &&
       slot.available,
   ).length;
 }
@@ -1248,12 +1250,11 @@ function hasAvailableSlotForHour(
 }
 
 function getDateKey(value: string) {
-  return toDateKey(new Date(value));
+  return getOpdDateKey(value);
 }
 
 function getTodayDateKey() {
-  const today = new Date();
-  return toDateKey(today);
+  return getOpdDateKey(new Date());
 }
 
 function parseDateKey(value: string) {

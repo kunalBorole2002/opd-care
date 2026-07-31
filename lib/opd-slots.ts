@@ -7,6 +7,9 @@ export type GeneratedOpdSlot = {
 };
 
 export const SLOT_INTERVAL_MINUTES = 15;
+export const OPD_TIME_ZONE = "Asia/Kolkata";
+const OPD_UTC_OFFSET_MINUTES = 5 * 60 + 30;
+const OPD_UTC_OFFSET_MILLISECONDS = OPD_UTC_OFFSET_MINUTES * 60 * 1000;
 const SCHEDULE_DAYS = 30;
 
 export const opdSessions: Record<
@@ -19,22 +22,24 @@ export const opdSessions: Record<
 };
 
 export function getScheduleWindow(now = new Date()) {
-  const start = startOfDay(now);
-  const end = startOfDay(now);
-  end.setDate(end.getDate() + SCHEDULE_DAYS);
+  const startClock = toOpdClock(now);
+  startClock.setUTCHours(0, 0, 0, 0);
+  const endClock = new Date(startClock);
+  endClock.setUTCDate(endClock.getUTCDate() + SCHEDULE_DAYS);
 
-  return { start, end };
+  return { start: fromOpdClock(startClock), end: fromOpdClock(endClock) };
 }
 
 export function generateOpdSlots(doctorId: string, now = new Date()) {
   const { start } = getScheduleWindow(now);
+  const startClock = toOpdClock(start);
   const slots: GeneratedOpdSlot[] = [];
 
   for (let dayOffset = 0; dayOffset < SCHEDULE_DAYS; dayOffset += 1) {
-    const day = new Date(start);
-    day.setDate(start.getDate() + dayOffset);
+    const dayClock = new Date(startClock);
+    dayClock.setUTCDate(startClock.getUTCDate() + dayOffset);
 
-    if (day.getDay() === 0) {
+    if (dayClock.getUTCDay() === 0) {
       continue;
     }
 
@@ -46,8 +51,13 @@ export function generateOpdSlots(doctorId: string, now = new Date()) {
       const sessionEnd = minutesFromMidnight(range.endHour, range.endMinute);
 
       for (let minuteOfDay = sessionStart; minuteOfDay < sessionEnd; minuteOfDay += SLOT_INTERVAL_MINUTES) {
-        const startsAt = new Date(day);
-        startsAt.setHours(Math.floor(minuteOfDay / 60), minuteOfDay % 60, 0, 0);
+        const startsAt = createOpdDate(
+          dayClock.getUTCFullYear(),
+          dayClock.getUTCMonth() + 1,
+          dayClock.getUTCDate(),
+          Math.floor(minuteOfDay / 60),
+          minuteOfDay % 60,
+        );
 
         if (startsAt <= now) {
           continue;
@@ -66,11 +76,17 @@ export function generateOpdSlots(doctorId: string, now = new Date()) {
 }
 
 export function getOpdSession(value: Date): OpdSession | null {
-  if (value.getSeconds() !== 0 || value.getMilliseconds() !== 0 || value.getMinutes() % SLOT_INTERVAL_MINUTES !== 0) {
+  const clock = toOpdClock(value);
+
+  if (
+    clock.getUTCSeconds() !== 0 ||
+    clock.getUTCMilliseconds() !== 0 ||
+    clock.getUTCMinutes() % SLOT_INTERVAL_MINUTES !== 0
+  ) {
     return null;
   }
 
-  const minuteOfDay = minutesFromMidnight(value.getHours(), value.getMinutes());
+  const minuteOfDay = minutesFromMidnight(clock.getUTCHours(), clock.getUTCMinutes());
 
   for (const [session, range] of Object.entries(opdSessions) as [
     OpdSession,
@@ -111,9 +127,7 @@ export function getOpdHourCandidates(dateKey: string, session: OpdSession, hour:
     { length: Math.ceil((candidateEnd - candidateStart) / SLOT_INTERVAL_MINUTES) },
     (_, index) => {
       const minuteOfDay = candidateStart + index * SLOT_INTERVAL_MINUTES;
-      const startsAt = new Date(year, month - 1, day);
-      startsAt.setHours(Math.floor(minuteOfDay / 60), minuteOfDay % 60, 0, 0);
-      return startsAt;
+      return createOpdDate(year, month, day, Math.floor(minuteOfDay / 60), minuteOfDay % 60);
     },
   );
 }
@@ -127,7 +141,12 @@ export function getOpdSessionHours(session: OpdSession) {
 }
 
 export function isValidOpdSlot(value: Date, now = new Date()) {
-  if (Number.isNaN(value.getTime()) || value <= now || value.getDay() === 0 || !getOpdSession(value)) {
+  if (
+    Number.isNaN(value.getTime()) ||
+    value <= now ||
+    toOpdClock(value).getUTCDay() === 0 ||
+    !getOpdSession(value)
+  ) {
     return false;
   }
 
@@ -139,8 +158,27 @@ function minutesFromMidnight(hour: number, minute: number) {
   return hour * 60 + minute;
 }
 
-function startOfDay(value: Date) {
-  const date = new Date(value);
-  date.setHours(0, 0, 0, 0);
-  return date;
+export function getOpdDateKey(value: Date | string) {
+  const clock = toOpdClock(value);
+  const year = clock.getUTCFullYear();
+  const month = String(clock.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(clock.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function getOpdHour(value: Date | string) {
+  return toOpdClock(value).getUTCHours();
+}
+
+function createOpdDate(year: number, month: number, day: number, hour: number, minute: number) {
+  return new Date(Date.UTC(year, month - 1, day, hour, minute) - OPD_UTC_OFFSET_MILLISECONDS);
+}
+
+function toOpdClock(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
+  return new Date(date.getTime() + OPD_UTC_OFFSET_MILLISECONDS);
+}
+
+function fromOpdClock(value: Date) {
+  return new Date(value.getTime() - OPD_UTC_OFFSET_MILLISECONDS);
 }

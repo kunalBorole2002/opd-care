@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 import QRCode from "qrcode";
 import { prisma } from "@/lib/prisma";
+import { OPD_TIME_ZONE } from "@/lib/opd-slots";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -238,6 +239,7 @@ function buildReceiptHtml({
 
 function formatDateTime(value: Date) {
   return new Intl.DateTimeFormat("en-IN", {
+    timeZone: OPD_TIME_ZONE,
     weekday: "short",
     day: "2-digit",
     month: "short",
