@@ -1,5 +1,3 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { TranscriptionStatus, VisitConversationStatus } from "@prisma/client";
@@ -7,6 +5,12 @@ import { DOCTOR_SESSION_COOKIE } from "@/lib/doctor-auth";
 import { generateClinicalNotesForConversation } from "@/lib/clinical-note-generation";
 import { visitConversationRecordingEnabled } from "@/lib/feature-flags";
 import { prisma } from "@/lib/prisma";
+import {
+  downloadStorageObject,
+  removeStorageObjects,
+  storageObjectPath,
+  uploadStorageObject,
+} from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
 
@@ -25,7 +29,6 @@ type SpeakerTranscript = {
   warnings?: string[];
 };
 
-const storageRoot = path.join(process.cwd(), "storage", "visit-conversations");
 const maxDurationSeconds = 4 * 60 * 60;
 const maxRecordingBytes = 250 * 1024 * 1024;
 const maxChunkBytes = 32 * 1024 * 1024;
@@ -177,62 +180,80 @@ export async function POST(request: Request) {
   const completedAt = parseDate(completedAtText);
   const safeBookingCode = sanitizePathSegment(appointment.bookingCode);
   const attemptLabel = `attempt-${new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15)}`;
-  const folder = path.join(storageRoot, safeBookingCode, attemptLabel);
-  const chunksFolder = path.join(folder, "chunks");
-  const transcriptsFolder = path.join(folder, "transcripts");
+  const folderPath = storageObjectPath("visit-conversations", safeBookingCode, attemptLabel);
   const recordingExtension = extensionForAudio(recording);
-  const recordingPath = path.join(folder, `recording.${recordingExtension}`);
-  const relativeRecordingPath = path.join("storage", "visit-conversations", safeBookingCode, attemptLabel, `recording.${recordingExtension}`);
-
-  await mkdir(chunksFolder, { recursive: true });
-  await mkdir(transcriptsFolder, { recursive: true });
+  const recordingPath = storageObjectPath(folderPath, `recording.${recordingExtension}`);
 
   const recordingBuffer = Buffer.from(await recording.arrayBuffer());
-  await writeFile(recordingPath, recordingBuffer);
 
   const chunkPayloads = await Promise.all(
     chunks.map(async (chunk, index) => {
       const chunkIndex = index + 1;
       const extension = extensionForAudio(chunk);
       const fileName = `chunk-${String(chunkIndex).padStart(3, "0")}.${extension}`;
-      const absolutePath = path.join(chunksFolder, fileName);
-      const relativePath = path.join("storage", "visit-conversations", safeBookingCode, attemptLabel, "chunks", fileName);
+      const objectPath = storageObjectPath(folderPath, "chunks", fileName);
       const buffer = Buffer.from(await chunk.arrayBuffer());
-      await writeFile(absolutePath, buffer);
 
       return {
         chunkIndex,
-        relativePath,
+        objectPath,
+        buffer,
         mimeType: chunk.type || recording.type || "application/octet-stream",
         sizeBytes: buffer.byteLength,
       };
     }),
   );
 
-  const conversation = await prisma.visitConversation.create({
-    data: {
-      appointmentId: appointment.id,
-      bookingCode: appointment.bookingCode,
-      attemptLabel,
-      folderPath: path.join("storage", "visit-conversations", safeBookingCode, attemptLabel),
-      recordingPath: relativeRecordingPath,
-      mimeType: recording.type || "application/octet-stream",
-      sizeBytes: recordingBuffer.byteLength,
-      durationSeconds,
-      status: VisitConversationStatus.UPLOADED,
-      startedAt,
-      completedAt,
-      chunks: {
-        create: chunkPayloads.map((chunk) => ({
-          chunkIndex: chunk.chunkIndex,
-          filePath: chunk.relativePath,
-          mimeType: chunk.mimeType,
-          sizeBytes: chunk.sizeBytes,
-          durationSeconds: Math.min(60, Math.max(1, durationSeconds - (chunk.chunkIndex - 1) * 60)),
-        })),
+  const uploadedPaths: string[] = [];
+  let conversation;
+
+  try {
+    await uploadStorageObject({
+      objectPath: recordingPath,
+      body: recordingBuffer,
+      contentType: recording.type || "application/octet-stream",
+    });
+    uploadedPaths.push(recordingPath);
+
+    for (const chunk of chunkPayloads) {
+      await uploadStorageObject({
+        objectPath: chunk.objectPath,
+        body: chunk.buffer,
+        contentType: chunk.mimeType,
+      });
+      uploadedPaths.push(chunk.objectPath);
+    }
+
+    conversation = await prisma.visitConversation.create({
+      data: {
+        appointmentId: appointment.id,
+        bookingCode: appointment.bookingCode,
+        attemptLabel,
+        folderPath,
+        recordingPath,
+        mimeType: recording.type || "application/octet-stream",
+        sizeBytes: recordingBuffer.byteLength,
+        durationSeconds,
+        status: VisitConversationStatus.UPLOADED,
+        startedAt,
+        completedAt,
+        chunks: {
+          create: chunkPayloads.map((chunk) => ({
+            chunkIndex: chunk.chunkIndex,
+            filePath: chunk.objectPath,
+            mimeType: chunk.mimeType,
+            sizeBytes: chunk.sizeBytes,
+            durationSeconds: Math.min(60, Math.max(1, durationSeconds - (chunk.chunkIndex - 1) * 60)),
+          })),
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    await removeStorageObjects(uploadedPaths).catch((cleanupError) => {
+      console.error("Failed to clean up conversation uploads", cleanupError);
+    });
+    throw error;
+  }
 
   await prisma.clinicalRecord.updateMany({
     where: { appointmentId: appointment.id },
@@ -345,16 +366,21 @@ async function processConversation(conversationId: string) {
   });
 
   try {
-    const audio = await readFile(getStoredPath(conversation.recordingPath));
+    const audio = await downloadStorageObject(conversation.recordingPath);
     const scribeResponse = await transcribeConversationWithScribe({
       apiKey: elevenLabsApiKey,
       audio,
       mimeType: conversation.mimeType,
-      fileName: path.basename(conversation.recordingPath),
+      fileName: conversation.recordingPath.split("/").at(-1) || "conversation.webm",
     });
 
-    const scribeJsonPath = path.join(conversation.folderPath, "transcripts", "elevenlabs-scribe-v2.json");
-    await writeFile(getStoredPath(scribeJsonPath), JSON.stringify(scribeResponse, null, 2));
+    const scribeJsonPath = storageObjectPath(conversation.folderPath, "transcripts", "elevenlabs-scribe-v2.json");
+    await uploadStorageObject({
+      objectPath: scribeJsonPath,
+      body: JSON.stringify(scribeResponse, null, 2),
+      contentType: "application/json",
+      upsert: true,
+    });
 
     const rawTranscript = typeof scribeResponse.text === "string" ? scribeResponse.text.trim() : "";
     const words = normalizeScribeWords(scribeResponse.words);
@@ -367,14 +393,14 @@ async function processConversation(conversationId: string) {
 
     for (const chunk of conversation.chunks) {
       const text = buildChunkTranscript(words, chunk.chunkIndex, Number(chunk.durationSeconds) || 60);
-      const transcriptPath = path.join(
+      const transcriptPath = storageObjectPath(
         conversation.folderPath,
         "transcripts",
         `chunk-${String(chunk.chunkIndex).padStart(3, "0")}.json`,
       );
-      await writeFile(
-        getStoredPath(transcriptPath),
-        JSON.stringify(
+      await uploadStorageObject({
+        objectPath: transcriptPath,
+        body: JSON.stringify(
           {
             chunkIndex: chunk.chunkIndex,
             text,
@@ -384,7 +410,9 @@ async function processConversation(conversationId: string) {
           null,
           2,
         ),
-      );
+        contentType: "application/json",
+        upsert: true,
+      });
 
       await prisma.visitConversationChunk.update({
         where: { id: chunk.id },
@@ -408,9 +436,14 @@ async function processConversation(conversationId: string) {
 
     const speakerTranscript = buildSpeakerTranscriptFromScribe(scribeResponse, conversation.bookingCode);
     const speakerJson = JSON.stringify(speakerTranscript, null, 2);
-    const conversationJsonPath = path.join(conversation.folderPath, "conversation.json");
+    const conversationJsonPath = storageObjectPath(conversation.folderPath, "conversation.json");
 
-    await writeFile(getStoredPath(conversationJsonPath), speakerJson);
+    await uploadStorageObject({
+      objectPath: conversationJsonPath,
+      body: speakerJson,
+      contentType: "application/json",
+      upsert: true,
+    });
 
     await prisma.visitConversation.update({
       where: { id: conversation.id },
@@ -799,25 +832,6 @@ function parseDate(value: string) {
 
 function sanitizePathSegment(value: string) {
   return value.replace(/[^A-Z0-9-]/g, "");
-}
-
-function getStoredPath(relativePath: string) {
-  const root = path.resolve(storageRoot);
-  const storagePrefix = path.normalize(path.join("storage", "visit-conversations"));
-  const normalizedRelativePath = path.normalize(relativePath);
-
-  if (normalizedRelativePath !== storagePrefix && !normalizedRelativePath.startsWith(`${storagePrefix}${path.sep}`)) {
-    throw new Error("Stored conversation path is invalid.");
-  }
-
-  const storageRelativePath = normalizedRelativePath.slice(storagePrefix.length).replace(/^[/\\]+/, "");
-  const absolutePath = path.resolve(root, storageRelativePath);
-
-  if (absolutePath !== root && !absolutePath.startsWith(`${root}${path.sep}`)) {
-    throw new Error("Stored conversation path is invalid.");
-  }
-
-  return absolutePath;
 }
 
 function isAllowedAudio(file: File) {

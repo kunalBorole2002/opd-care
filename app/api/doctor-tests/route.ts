@@ -1,12 +1,11 @@
 import OpenAI from "openai";
 import { randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { TestExtractionStatus } from "@prisma/client";
 import { DOCTOR_SESSION_COOKIE } from "@/lib/doctor-auth";
 import { prisma } from "@/lib/prisma";
+import { removeStorageObjects, storageObjectPath, uploadStorageObject } from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
 
@@ -40,7 +39,6 @@ type DeleteTestPayload = {
 };
 
 const modelName = "nvidia/llama-3.1-nemotron-nano-vl-8b-v1";
-const storageRoot = path.join(process.cwd(), "storage", "test-results");
 const maxFiles = 8;
 const maxFileBytes = 8 * 1024 * 1024;
 const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -94,48 +92,64 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Appointment visit ID is invalid." }, { status: 400 });
   }
 
-  const visitFolder = path.join(storageRoot, visitFolderName);
-  await mkdir(visitFolder, { recursive: true });
-
   const filePayloads = await Promise.all(
     files.map(async (file, index) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       const extension = extensionForMimeType(file.type);
       const fileName = `${Date.now()}-${index + 1}-${randomUUID()}${extension}`;
-      const absolutePath = path.join(visitFolder, fileName);
-      const relativePath = path.join("storage", "test-results", visitFolderName, fileName);
-      await writeFile(absolutePath, buffer);
+      const objectPath = storageObjectPath("test-results", visitFolderName, fileName);
 
       return {
         file,
         buffer,
-        relativePath,
+        objectPath,
       };
     }),
   );
 
-  const record = await prisma.clinicalRecord.upsert({
-    where: { appointmentId },
-    update: {},
-    create: { appointmentId },
-  });
+  const uploadedPaths: string[] = [];
+  let savedTest;
 
-  const savedTest = await prisma.clinicalTestResult.create({
-    data: {
-      clinicalRecordId: record.id,
-      testName,
-      extractionStatus: TestExtractionStatus.PENDING,
-      images: {
-        create: filePayloads.map(({ file, buffer, relativePath }) => ({
-          filePath: relativePath,
-          originalName: file.name || "test-result-image",
-          mimeType: file.type || "application/octet-stream",
-          sizeBytes: buffer.byteLength,
-        })),
-      },
-    },
-    include: { images: true },
-  });
+  try {
+    for (const payload of filePayloads) {
+      await uploadStorageObject({
+        objectPath: payload.objectPath,
+        body: payload.buffer,
+        contentType: payload.file.type,
+      });
+      uploadedPaths.push(payload.objectPath);
+    }
+
+    savedTest = await prisma.$transaction(async (tx) => {
+      const record = await tx.clinicalRecord.upsert({
+        where: { appointmentId },
+        update: {},
+        create: { appointmentId },
+      });
+
+      return tx.clinicalTestResult.create({
+        data: {
+          clinicalRecordId: record.id,
+          testName,
+          extractionStatus: TestExtractionStatus.PENDING,
+          images: {
+            create: filePayloads.map(({ file, buffer, objectPath }) => ({
+              filePath: objectPath,
+              originalName: file.name || "test-result-image",
+              mimeType: file.type || "application/octet-stream",
+              sizeBytes: buffer.byteLength,
+            })),
+          },
+        },
+        include: { images: true },
+      });
+    });
+  } catch (error) {
+    await removeStorageObjects(uploadedPaths).catch((cleanupError) => {
+      console.error("Failed to clean up test-result uploads", cleanupError);
+    });
+    throw error;
+  }
 
   try {
     const extracted = normalizeExtractedResult(
@@ -239,7 +253,9 @@ export async function DELETE(request: Request) {
     });
   });
 
-  await Promise.allSettled(testResult.images.map((image) => unlink(getStoredTestImagePath(image.filePath))));
+  await removeStorageObjects(testResult.images.map((image) => image.filePath)).catch((error) => {
+    console.error("Failed to remove test-result images from Supabase Storage", error);
+  });
 
   return NextResponse.json({ message: "Test result deleted." });
 }
@@ -427,25 +443,6 @@ function extensionForMimeType(mimeType: string) {
   if (mimeType === "image/png") return ".png";
   if (mimeType === "image/webp") return ".webp";
   return ".jpg";
-}
-
-function getStoredTestImagePath(storedPath: string) {
-  const root = path.resolve(storageRoot);
-  const storagePrefix = path.normalize(path.join("storage", "test-results"));
-  const normalizedStoredPath = path.normalize(storedPath);
-
-  if (normalizedStoredPath !== storagePrefix && !normalizedStoredPath.startsWith(`${storagePrefix}${path.sep}`)) {
-    throw new Error("Stored test image path is invalid.");
-  }
-
-  const relativePath = normalizedStoredPath.slice(storagePrefix.length).replace(/^[/\\]+/, "");
-  const absolutePath = path.resolve(root, relativePath);
-
-  if (absolutePath !== root && !absolutePath.startsWith(`${root}${path.sep}`)) {
-    throw new Error("Stored test image path is invalid.");
-  }
-
-  return absolutePath;
 }
 
 function sanitizePathSegment(value: string) {

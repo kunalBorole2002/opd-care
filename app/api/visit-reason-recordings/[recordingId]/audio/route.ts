@@ -1,9 +1,8 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { DOCTOR_SESSION_COOKIE } from "@/lib/doctor-auth";
 import { prisma } from "@/lib/prisma";
+import { downloadStorageObject } from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
 
@@ -35,10 +34,8 @@ export async function GET(
     return NextResponse.json({ message: "Recording is not available for this doctor." }, { status: 403 });
   }
 
-  const absolutePath = getRecordingPath(recording.filePath);
-
   try {
-    const audio = await readFile(absolutePath);
+    const audio = await downloadStorageObject(recording.filePath);
     const range = request.headers.get("range");
     const baseHeaders = {
       "Content-Type": recording.mimeType,
@@ -73,11 +70,4 @@ export async function GET(
   } catch {
     return NextResponse.json({ message: "Recording file could not be read." }, { status: 404 });
   }
-}
-
-function getRecordingPath(storedPath: string) {
-  const storageRoot = path.resolve(process.cwd(), "storage", "visit-reason-recordings");
-  const fileName = storedPath.split(/[\\/]/).filter(Boolean).at(-1) ?? storedPath;
-
-  return path.join(storageRoot, fileName);
 }

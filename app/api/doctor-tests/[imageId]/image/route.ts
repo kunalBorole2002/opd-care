@@ -1,9 +1,8 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { DOCTOR_SESSION_COOKIE } from "@/lib/doctor-auth";
 import { prisma } from "@/lib/prisma";
+import { downloadStorageObject } from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
 
@@ -44,7 +43,7 @@ export async function GET(
   }
 
   try {
-    const file = await readFile(getTestImagePath(image.filePath));
+    const file = await downloadStorageObject(image.filePath);
 
     return new NextResponse(file, {
       headers: {
@@ -57,25 +56,6 @@ export async function GET(
   } catch {
     return NextResponse.json({ message: "Test image file could not be read." }, { status: 404 });
   }
-}
-
-function getTestImagePath(storedPath: string) {
-  const storageRoot = path.resolve(process.cwd(), "storage", "test-results");
-  const storagePrefix = path.normalize(path.join("storage", "test-results"));
-  const normalizedStoredPath = path.normalize(storedPath);
-
-  if (normalizedStoredPath !== storagePrefix && !normalizedStoredPath.startsWith(`${storagePrefix}${path.sep}`)) {
-    throw new Error("Stored test image path is invalid.");
-  }
-
-  const relativePath = normalizedStoredPath.slice(storagePrefix.length).replace(/^[/\\]+/, "");
-  const absolutePath = path.resolve(storageRoot, relativePath);
-
-  if (absolutePath !== storageRoot && !absolutePath.startsWith(`${storageRoot}${path.sep}`)) {
-    throw new Error("Stored test image path is invalid.");
-  }
-
-  return absolutePath;
 }
 
 function safeFileName(value: string) {

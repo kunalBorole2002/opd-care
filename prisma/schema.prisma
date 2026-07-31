@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Patient {
@@ -78,6 +79,7 @@ model Appointment {
   conversations    VisitConversation[]
 
   @@unique([doctorId, startsAt])
+  @@index([patientId])
   @@index([locationId])
   @@index([followUpFromId])
 }
@@ -112,6 +114,8 @@ model PatientMedicalHistory {
   detail     String
   recordedAt DateTime @default(now())
   patient    Patient  @relation(fields: [patientId], references: [id])
+
+  @@index([patientId])
 }
 
 model ClinicalRecord {
@@ -163,6 +167,8 @@ model PrescriptionItem {
   quantity         String?
   instructions     String?
   clinicalRecord   ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
+
+  @@index([clinicalRecordId])
 }
 
 model ClinicalTestResult {
@@ -202,6 +208,8 @@ model ClinicalTestImage {
   sizeBytes    Int
   createdAt    DateTime           @default(now())
   testResult   ClinicalTestResult @relation(fields: [testResultId], references: [id])
+
+  @@index([testResultId])
 }
 
 model VisitReasonRecording {

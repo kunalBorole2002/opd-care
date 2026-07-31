@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:push": "prisma db push",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "node prisma/seed.mjs",
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "@supabase/supabase-js": "2.111.0",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "framer-motion": "latest",

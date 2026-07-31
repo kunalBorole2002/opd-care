@@ -1,16 +1,13 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { TranscriptionStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { removeStorageObjects, storageObjectPath, uploadStorageObject } from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
 
 const maxDurationSeconds = 30;
 const maxFileBytes = 4 * 1024 * 1024;
-const storageRoot = path.join(process.cwd(), "storage", "visit-reason-recordings");
-
 export async function POST(request: Request) {
   const formData = await request.formData();
   const appointmentId = String(formData.get("appointmentId") ?? "");
@@ -36,48 +33,63 @@ export async function POST(request: Request) {
 
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId },
-    select: { id: true, bookingCode: true },
+    select: {
+      id: true,
+      bookingCode: true,
+      recording: { select: { filePath: true } },
+    },
   });
 
   if (!appointment || appointment.bookingCode !== bookingCode) {
     return NextResponse.json({ message: "Recording does not match this visit reference." }, { status: 403 });
   }
 
-  await mkdir(storageRoot, { recursive: true });
-
   const fileName = `${appointment.bookingCode}-${randomUUID()}.wav`;
-  const absolutePath = path.join(storageRoot, fileName);
-  const relativePath = path.join("storage", "visit-reason-recordings", fileName);
+  const objectPath = storageObjectPath("visit-reason-recordings", appointment.bookingCode, fileName);
   const buffer = Buffer.from(await file.arrayBuffer());
 
   if (!hasWavHeader(buffer)) {
     return NextResponse.json({ message: "Recording file is not a valid WAV file." }, { status: 400 });
   }
 
-  await writeFile(absolutePath, buffer);
+  await uploadStorageObject({ objectPath, body: buffer, contentType: "audio/wav" });
 
-  const recording = await prisma.visitReasonRecording.upsert({
-    where: { appointmentId: appointment.id },
-    update: {
-      bookingCode: appointment.bookingCode,
-      filePath: relativePath,
-      mimeType: "audio/wav",
-      sizeBytes: buffer.byteLength,
-      durationSeconds,
-      transcript: null,
-      transcriptionStatus: TranscriptionStatus.PENDING,
-      transcriptionError: null,
-      transcribedAt: null,
-    },
-    create: {
-      appointmentId: appointment.id,
-      bookingCode: appointment.bookingCode,
-      filePath: relativePath,
-      mimeType: "audio/wav",
-      sizeBytes: buffer.byteLength,
-      durationSeconds,
-    },
-  });
+  let recording;
+  try {
+    recording = await prisma.visitReasonRecording.upsert({
+      where: { appointmentId: appointment.id },
+      update: {
+        bookingCode: appointment.bookingCode,
+        filePath: objectPath,
+        mimeType: "audio/wav",
+        sizeBytes: buffer.byteLength,
+        durationSeconds,
+        transcript: null,
+        transcriptionStatus: TranscriptionStatus.PENDING,
+        transcriptionError: null,
+        transcribedAt: null,
+      },
+      create: {
+        appointmentId: appointment.id,
+        bookingCode: appointment.bookingCode,
+        filePath: objectPath,
+        mimeType: "audio/wav",
+        sizeBytes: buffer.byteLength,
+        durationSeconds,
+      },
+    });
+  } catch (error) {
+    await removeStorageObjects([objectPath]).catch((cleanupError) => {
+      console.error("Failed to clean up visit-reason recording", cleanupError);
+    });
+    throw error;
+  }
+
+  if (appointment.recording?.filePath && appointment.recording.filePath !== objectPath) {
+    await removeStorageObjects([appointment.recording.filePath]).catch((error) => {
+      console.error("Failed to remove replaced visit-reason recording", error);
+    });
+  }
 
   void transcribeRecording(recording.id, buffer).catch((error) => {
     console.error("Visit reason transcription failed", error);

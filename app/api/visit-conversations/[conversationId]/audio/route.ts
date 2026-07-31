@@ -1,13 +1,11 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { DOCTOR_SESSION_COOKIE } from "@/lib/doctor-auth";
 import { prisma } from "@/lib/prisma";
+import { downloadStorageObject } from "@/lib/supabase-storage";
 
 export const runtime = "nodejs";
-
-const storageRoot = path.join(process.cwd(), "storage", "visit-conversations");
 
 export async function GET(request: Request, { params }: { params: Promise<{ conversationId: string }> }) {
   const { conversationId } = await params;
@@ -35,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ conv
   }
 
   try {
-    const audio = await readFile(getStoredConversationPath(conversation.recordingPath));
+    const audio = await downloadStorageObject(conversation.recordingPath);
     const range = request.headers.get("range");
     const extension = path.extname(conversation.recordingPath).replace(/^\./, "") || "webm";
     const baseHeaders = {
@@ -71,25 +69,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ conv
   } catch {
     return NextResponse.json({ message: "Conversation recording file could not be read." }, { status: 404 });
   }
-}
-
-function getStoredConversationPath(relativePath: string) {
-  const root = path.resolve(storageRoot);
-  const storagePrefix = path.normalize(path.join("storage", "visit-conversations"));
-  const normalizedRelativePath = path.normalize(relativePath);
-
-  if (normalizedRelativePath !== storagePrefix && !normalizedRelativePath.startsWith(`${storagePrefix}${path.sep}`)) {
-    throw new Error("Stored conversation path is invalid.");
-  }
-
-  const storageRelativePath = normalizedRelativePath.slice(storagePrefix.length).replace(/^[/\\]+/, "");
-  const absolutePath = path.resolve(root, storageRelativePath);
-
-  if (absolutePath !== root && !absolutePath.startsWith(`${root}${path.sep}`)) {
-    throw new Error("Stored conversation path is invalid.");
-  }
-
-  return absolutePath;
 }
 
 function safeFileName(value: string) {
