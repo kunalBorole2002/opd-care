@@ -1,0 +1,40 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "eng",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello. How are you doing?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9987281599936837
+    },
+    {
+      "speaker": "Patient",
+      "text": "I'm doing great, doctor.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.999767179902012
+    },
+    {
+      "speaker": "Doctor",
+      "text": "Tell me about your condition.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.999995377776703
+    },
+    {
+      "speaker": "Patient",
+      "text": "So, doctor, I have cough from last four to five days",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9999959705423215
+    }
+  ],
+  "plainTranscript": "Doctor: Hello. How are you doing?\nPatient: I'm doing great, doctor.\nDoctor: Tell me about your condition.\nPatient: So, doctor, I have cough from last four to five days",
+  "warnings": []
+}

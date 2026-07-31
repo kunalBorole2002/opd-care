@@ -1,0 +1,16 @@
+{
+  "bookingCode": "OPD-MS7UGHJD-8PZFQ",
+  "language": "hin",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello, कैसे हो आप? मैं अच्छा हूँ doctor. बताइए आपको क्या हुआ है? Doctor मुझे खांसी हुई है।",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9228907276289364
+    }
+  ],
+  "plainTranscript": "Doctor: Hello, कैसे हो आप? मैं अच्छा हूँ doctor. बताइए आपको क्या हुआ है? Doctor मुझे खांसी हुई है।",
+  "warnings": []
+}

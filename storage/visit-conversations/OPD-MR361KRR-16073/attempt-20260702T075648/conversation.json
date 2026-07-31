@@ -1,0 +1,32 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "mixed",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "खलोँ, कैसे हूँ आप? मैठी हैं.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.86
+    },
+    {
+      "speaker": "Patient",
+      "text": "हलो डॉक्टर, तो बताये फिर आपको क्या हुआ है? डॉक्टर, मुझे तीन दीन से बहुत ज़्यादा सर्दी हुई है. मैंने इसके पहदे थोड़ी सी गोलिया ली, पर उससे मेरी सर्दी ठीक नहीं हुई.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.86
+    },
+    {
+      "speaker": "Doctor",
+      "text": "ठीक है?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.86
+    }
+  ],
+  "plainTranscript": "Doctor: खलोँ, कैसे हूँ आप? मैठी हैं.\nPatient: हलो डॉक्टर, तो बताये फिर आपको क्या हुआ है? डॉक्टर, मुझे तीन दीन से बहुत ज़्यादा सर्दी हुई है. मैंने इसके पहदे थोड़ी सी गोलिया ली, पर उससे मेरी सर्दी ठीक नहीं हुई.\nDoctor: ठीक है?",
+  "warnings": []
+}

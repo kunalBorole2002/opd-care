@@ -1,0 +1,401 @@
+{
+  "language_code": "eng",
+  "language_probability": 0.9691669344902039,
+  "text": "Hello. How are you doing? I'm doing great, doctor. Tell me about your condition. So, doctor, I have cough from last four to five days",
+  "words": [
+    {
+      "text": "Hello.",
+      "start": 4.619,
+      "end": 4.98,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.020483455640108634
+    },
+    {
+      "text": " ",
+      "start": 4.98,
+      "end": 5.539,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000001311301275563892
+    },
+    {
+      "text": "How",
+      "start": 5.539,
+      "end": 5.639,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000001311301275563892
+    },
+    {
+      "text": " ",
+      "start": 5.639,
+      "end": 5.659,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000004172316494077677
+    },
+    {
+      "text": "are",
+      "start": 5.659,
+      "end": 5.719,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000004172316494077677
+    },
+    {
+      "text": " ",
+      "start": 5.719,
+      "end": 5.739,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": "you",
+      "start": 5.739,
+      "end": 5.819,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": " ",
+      "start": 5.819,
+      "end": 5.879,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0000010728830375228426
+    },
+    {
+      "text": "doing?",
+      "start": 5.879,
+      "end": 6.059,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000007967003341491363
+    },
+    {
+      "text": " ",
+      "start": 6.059,
+      "end": 6.059,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00028010259848088026
+    },
+    {
+      "text": "I'm",
+      "start": 7.46,
+      "end": 7.599,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000023006808665589535
+    },
+    {
+      "text": " ",
+      "start": 7.599,
+      "end": 7.659,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -3.576278118089249e-7
+    },
+    {
+      "text": "doing",
+      "start": 7.659,
+      "end": 7.819,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -3.576278118089249e-7
+    },
+    {
+      "text": " ",
+      "start": 7.819,
+      "end": 7.919,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": "great,",
+      "start": 7.919,
+      "end": 8.099,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000038758402897798305
+    },
+    {
+      "text": " ",
+      "start": 8.099,
+      "end": 8.22,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.0004325169720686972
+    },
+    {
+      "text": "doctor.",
+      "start": 8.22,
+      "end": 8.619,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000440517340653709
+    },
+    {
+      "text": " ",
+      "start": 8.619,
+      "end": 8.619,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000003099436753473128
+    },
+    {
+      "text": "Tell",
+      "start": 10.779,
+      "end": 10.939,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0000040531076592742465
+    },
+    {
+      "text": " ",
+      "start": 10.939,
+      "end": 11.039,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "me",
+      "start": 11.039,
+      "end": 11.199,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 11.199,
+      "end": 11.3,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "about",
+      "start": 11.3,
+      "end": 11.539,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 11.539,
+      "end": 11.619,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "your",
+      "start": 11.619,
+      "end": 11.84,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 11.84,
+      "end": 12.34,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000002861018856492592
+    },
+    {
+      "text": "condition.",
+      "start": 12.34,
+      "end": 12.84,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000008737847338124993
+    },
+    {
+      "text": " ",
+      "start": 12.84,
+      "end": 12.84,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000002264974000354414
+    },
+    {
+      "text": "So,",
+      "start": 15,
+      "end": 15.079,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.001769373860345998
+    },
+    {
+      "text": " ",
+      "start": 15.079,
+      "end": 15.139,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.0015047191409394145
+    },
+    {
+      "text": "doctor,",
+      "start": 15.139,
+      "end": 15.5,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.0012901679806418542
+    },
+    {
+      "text": " ",
+      "start": 15.5,
+      "end": 15.859,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": "I",
+      "start": 15.859,
+      "end": 16.039,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": " ",
+      "start": 16.039,
+      "end": 16.119,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": "have",
+      "start": 16.119,
+      "end": 16.379,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": " ",
+      "start": 16.379,
+      "end": 16.619,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.00007724463648628443
+    },
+    {
+      "text": "cough",
+      "start": 16.619,
+      "end": 17.139,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.00007724463648628443
+    },
+    {
+      "text": " ",
+      "start": 17.139,
+      "end": 17.239,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "from",
+      "start": 17.239,
+      "end": 17.44,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 17.44,
+      "end": 17.52,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000007867782187531702
+    },
+    {
+      "text": "last",
+      "start": 17.52,
+      "end": 17.819,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000007867782187531702
+    },
+    {
+      "text": " ",
+      "start": 17.819,
+      "end": 17.979,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": "four",
+      "start": 17.979,
+      "end": 18.199,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": " ",
+      "start": 18.199,
+      "end": 18.319,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "to",
+      "start": 18.319,
+      "end": 18.559,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 18.559,
+      "end": 18.6,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": "five",
+      "start": 18.6,
+      "end": 18.799,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": " ",
+      "start": 18.799,
+      "end": 18.879,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    },
+    {
+      "text": "days",
+      "start": 18.879,
+      "end": 20.34,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -2.3841855067985307e-7
+    }
+  ],
+  "transcription_id": "YqHHvLoz8iponYiHnqi7",
+  "audio_duration_secs": 24.54
+}

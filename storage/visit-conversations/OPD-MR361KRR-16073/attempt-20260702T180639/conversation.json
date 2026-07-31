@@ -1,0 +1,48 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "eng",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello, welcome to the clinic.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9963476608479047
+    },
+    {
+      "speaker": "Patient",
+      "text": "Hello, doctor.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9998201752165117
+    },
+    {
+      "speaker": "Doctor",
+      "text": "Tell me about yourself.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9999966787202144
+    },
+    {
+      "speaker": "Patient",
+      "text": "So, doctor, I have a blood cancer, and, uh, I want to treat it.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9998398964031536
+    },
+    {
+      "speaker": "Doctor",
+      "text": "Okay, I'll suggest you some tests.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.985282907583751
+    }
+  ],
+  "plainTranscript": "Doctor: Hello, welcome to the clinic.\nPatient: Hello, doctor.\nDoctor: Tell me about yourself.\nPatient: So, doctor, I have a blood cancer, and, uh, I want to treat it.\nDoctor: Okay, I'll suggest you some tests.",
+  "warnings": []
+}

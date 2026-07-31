@@ -1,0 +1,32 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "eng",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello. Welcome to The Clay Clinic. Please sit down. Tell me what is your disease.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9996995807481476
+    },
+    {
+      "speaker": "Patient",
+      "text": "Hello, doctor. I have cough from three to four days.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9999947456586551
+    },
+    {
+      "speaker": "Doctor",
+      "text": "Okay, tell me more about it.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9944214911825672
+    }
+  ],
+  "plainTranscript": "Doctor: Hello. Welcome to The Clay Clinic. Please sit down. Tell me what is your disease.\nPatient: Hello, doctor. I have cough from three to four days.\nDoctor: Okay, tell me more about it.",
+  "warnings": []
+}

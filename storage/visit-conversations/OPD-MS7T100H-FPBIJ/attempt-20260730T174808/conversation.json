@@ -1,0 +1,56 @@
+{
+  "bookingCode": "OPD-MS7T100H-FPBIJ",
+  "language": "hin",
+  "turns": [
+    {
+      "speaker": "Patient",
+      "text": "Hello.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9793632541727773
+    },
+    {
+      "speaker": "Doctor",
+      "text": "Hello, कैसे हो आप?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9996458111279034
+    },
+    {
+      "speaker": "Patient",
+      "text": "मैं अच्छा हूँ doctor.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9229575318408507
+    },
+    {
+      "speaker": "Doctor",
+      "text": "आपको क्या हुआ है?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9989729876921674
+    },
+    {
+      "speaker": "Patient",
+      "text": "Doctor मुझे सर्दी हुई है।",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9933437531842568
+    },
+    {
+      "speaker": "Doctor",
+      "text": "अच्छा ठीक है, बैठिए आप।",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9733499708709047
+    }
+  ],
+  "plainTranscript": "Patient: Hello.\nDoctor: Hello, कैसे हो आप?\nPatient: मैं अच्छा हूँ doctor.\nDoctor: आपको क्या हुआ है?\nPatient: Doctor मुझे सर्दी हुई है।\nDoctor: अच्छा ठीक है, बैठिए आप।",
+  "warnings": []
+}

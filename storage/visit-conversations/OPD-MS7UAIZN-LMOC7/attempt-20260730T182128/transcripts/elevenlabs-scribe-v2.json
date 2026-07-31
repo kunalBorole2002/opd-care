@@ -1,0 +1,17 @@
+{
+  "language_code": "sh",
+  "language_probability": 0.22171948850154877,
+  "text": "[silence]",
+  "words": [
+    {
+      "text": "[silence]",
+      "start": 0.099,
+      "end": 2.159,
+      "type": "audio_event",
+      "speaker_id": "agent",
+      "logprob": -0.10467921270485801
+    }
+  ],
+  "transcription_id": "UrAMi2PuoWVTzOy9zsom",
+  "audio_duration_secs": 4.44
+}

@@ -1,0 +1,321 @@
+{
+  "language_code": "hin",
+  "language_probability": 0.9785858988761902,
+  "text": "Hello, कैसे हो आप? मैं ठीक हूँ doctor. बताइए आपको क्या हुआ है? Doctor मेरा left hand fracture हुआ है।",
+  "words": [
+    {
+      "text": "Hello,",
+      "start": 3.159,
+      "end": 3.46,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0018422192224534228
+    },
+    {
+      "text": " ",
+      "start": 3.46,
+      "end": 3.819,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000041126360883936286
+    },
+    {
+      "text": "कैसे",
+      "start": 3.819,
+      "end": 4.059,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000041126360883936286
+    },
+    {
+      "text": " ",
+      "start": 4.059,
+      "end": 4.079,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00003433168603805825
+    },
+    {
+      "text": "हो",
+      "start": 4.079,
+      "end": 4.199,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00003433168603805825
+    },
+    {
+      "text": " ",
+      "start": 4.199,
+      "end": 4.259,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000019311717551317997
+    },
+    {
+      "text": "आप?",
+      "start": 4.259,
+      "end": 4.44,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00003572214215334194
+    },
+    {
+      "text": " ",
+      "start": 4.44,
+      "end": 4.44,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0011943596182391047
+    },
+    {
+      "text": "मैं",
+      "start": 5.48,
+      "end": 5.639,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.0011074369540438056
+    },
+    {
+      "text": " ",
+      "start": 5.639,
+      "end": 5.699,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.0000033378546504536644
+    },
+    {
+      "text": "ठीक",
+      "start": 5.699,
+      "end": 5.9,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.0000033378546504536644
+    },
+    {
+      "text": " ",
+      "start": 5.9,
+      "end": 5.92,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.127096027135849
+    },
+    {
+      "text": "हूँ",
+      "start": 5.92,
+      "end": 6.019,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.127096027135849
+    },
+    {
+      "text": " ",
+      "start": 6.019,
+      "end": 6.059,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.07842793315649033
+    },
+    {
+      "text": "doctor.",
+      "start": 6.059,
+      "end": 6.5,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.06782315844403845
+    },
+    {
+      "text": " ",
+      "start": 6.5,
+      "end": 6.5,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000001311301275563892
+    },
+    {
+      "text": "बताइए",
+      "start": 7.619,
+      "end": 7.98,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.007357465568929911
+    },
+    {
+      "text": " ",
+      "start": 7.98,
+      "end": 8,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0017496529035270214
+    },
+    {
+      "text": "आपको",
+      "start": 8,
+      "end": 8.26,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0017496529035270214
+    },
+    {
+      "text": " ",
+      "start": 8.26,
+      "end": 8.3,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000012755313036905136
+    },
+    {
+      "text": "क्या",
+      "start": 8.3,
+      "end": 8.439,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000012755313036905136
+    },
+    {
+      "text": " ",
+      "start": 8.439,
+      "end": 8.519,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000005364403477869928
+    },
+    {
+      "text": "हुआ",
+      "start": 8.519,
+      "end": 8.699,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000005364403477869928
+    },
+    {
+      "text": " ",
+      "start": 8.699,
+      "end": 8.739,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00001883488948806189
+    },
+    {
+      "text": "है?",
+      "start": 8.739,
+      "end": 8.88,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.02967903751171737
+    },
+    {
+      "text": " ",
+      "start": 8.88,
+      "end": 8.88,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000005483612312673358
+    },
+    {
+      "text": "Doctor",
+      "start": 10.3,
+      "end": 10.679,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.0038790472317487
+    },
+    {
+      "text": " ",
+      "start": 10.679,
+      "end": 10.719,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.12695366144180298
+    },
+    {
+      "text": "मेरा",
+      "start": 10.719,
+      "end": 10.899,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.12695366144180298
+    },
+    {
+      "text": " ",
+      "start": 10.899,
+      "end": 11,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.00007986703712958843
+    },
+    {
+      "text": "left",
+      "start": 11,
+      "end": 11.259,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.00007986703712958843
+    },
+    {
+      "text": " ",
+      "start": 11.259,
+      "end": 11.319,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000310730334604159
+    },
+    {
+      "text": "hand",
+      "start": 11.319,
+      "end": 11.659,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000310730334604159
+    },
+    {
+      "text": " ",
+      "start": 11.659,
+      "end": 12.579,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.003513237228617072
+    },
+    {
+      "text": "fracture",
+      "start": 12.579,
+      "end": 13.019,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.003513237228617072
+    },
+    {
+      "text": " ",
+      "start": 13.019,
+      "end": 13.059,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000021457441107486375
+    },
+    {
+      "text": "हुआ",
+      "start": 13.059,
+      "end": 13.279,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000021457441107486375
+    },
+    {
+      "text": " ",
+      "start": 13.279,
+      "end": 13.299,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000005960446742392378
+    },
+    {
+      "text": "है।",
+      "start": 13.299,
+      "end": 14.659,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000021496935914910864
+    }
+  ],
+  "transcription_id": "7BTR8iXtzXsfL7BQ6IQL",
+  "audio_duration_secs": 14.76
+}

@@ -1,0 +1,289 @@
+{
+  "language_code": "hin",
+  "language_probability": 0.9909756183624268,
+  "text": "Hello, कैसे हो आप? मैं अच्छा हूँ doctor. बताइए आपको क्या हुआ है? Doctor मुझे खांसी हुई है।",
+  "words": [
+    {
+      "text": "Hello,",
+      "start": 5.039,
+      "end": 5.339,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.022377319684892427
+    },
+    {
+      "text": " ",
+      "start": 5.339,
+      "end": 6.099,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00024673278676345944
+    },
+    {
+      "text": "कैसे",
+      "start": 6.099,
+      "end": 6.319,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00024673278676345944
+    },
+    {
+      "text": " ",
+      "start": 6.319,
+      "end": 6.339,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00008225102646974847
+    },
+    {
+      "text": "हो",
+      "start": 6.339,
+      "end": 6.399,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00008225102646974847
+    },
+    {
+      "text": " ",
+      "start": 6.399,
+      "end": 6.439,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00002658331868587993
+    },
+    {
+      "text": "आप?",
+      "start": 6.44,
+      "end": 6.619,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00005022502834132562
+    },
+    {
+      "text": " ",
+      "start": 6.619,
+      "end": 7.259,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0017210922669619322
+    },
+    {
+      "text": "मैं",
+      "start": 7.259,
+      "end": 7.379,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0017210922669619322
+    },
+    {
+      "text": " ",
+      "start": 7.379,
+      "end": 7.439,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000551310193259269
+    },
+    {
+      "text": "अच्छा",
+      "start": 7.44,
+      "end": 7.539,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000551310193259269
+    },
+    {
+      "text": " ",
+      "start": 7.539,
+      "end": 7.559,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.22696153819561005
+    },
+    {
+      "text": "हूँ",
+      "start": 7.559,
+      "end": 7.619,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.22696153819561005
+    },
+    {
+      "text": " ",
+      "start": 7.619,
+      "end": 7.659,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.02069324254989624
+    },
+    {
+      "text": "doctor.",
+      "start": 7.659,
+      "end": 8.099,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.11068078449794225
+    },
+    {
+      "text": " ",
+      "start": 8.099,
+      "end": 8.099,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0009884715545922518
+    },
+    {
+      "text": "बताइए",
+      "start": 9.139,
+      "end": 9.399,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0009884715545922518
+    },
+    {
+      "text": " ",
+      "start": 9.399,
+      "end": 9.42,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.001348539488390088
+    },
+    {
+      "text": "आपको",
+      "start": 9.42,
+      "end": 9.639,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.001348539488390088
+    },
+    {
+      "text": " ",
+      "start": 9.639,
+      "end": 9.699,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000019430925021879375
+    },
+    {
+      "text": "क्या",
+      "start": 9.699,
+      "end": 9.8,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000019430925021879375
+    },
+    {
+      "text": " ",
+      "start": 9.8,
+      "end": 9.819,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0000034570634852570947
+    },
+    {
+      "text": "हुआ",
+      "start": 9.819,
+      "end": 9.979,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0000034570634852570947
+    },
+    {
+      "text": " ",
+      "start": 9.979,
+      "end": 10.019,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000042437604861333966
+    },
+    {
+      "text": "है?",
+      "start": 10.019,
+      "end": 10.139,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000045735573318476476
+    },
+    {
+      "text": " ",
+      "start": 10.139,
+      "end": 10.139,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.4084099233150482
+    },
+    {
+      "text": "Doctor",
+      "start": 11.46,
+      "end": 11.859,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.4084099233150482
+    },
+    {
+      "text": " ",
+      "start": 11.859,
+      "end": 11.96,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0028080816846340895
+    },
+    {
+      "text": "मुझे",
+      "start": 11.96,
+      "end": 15.039,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0028080816846340895
+    },
+    {
+      "text": " ",
+      "start": 15.039,
+      "end": 15.039,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.6223130822181702
+    },
+    {
+      "text": "खांसी",
+      "start": 17.539,
+      "end": 17.859,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.6223130822181702
+    },
+    {
+      "text": " ",
+      "start": 17.859,
+      "end": 17.899,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.026651864871382713
+    },
+    {
+      "text": "हुई",
+      "start": 17.899,
+      "end": 18.1,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.026651864871382713
+    },
+    {
+      "text": " ",
+      "start": 18.1,
+      "end": 18.139,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000020503786799963564
+    },
+    {
+      "text": "है।",
+      "start": 18.139,
+      "end": 18.699,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0037336220799867683
+    }
+  ],
+  "transcription_id": "Iy8pMbfAVIO8N1M9QiOc",
+  "audio_duration_secs": 18.96
+}

@@ -1,0 +1,48 @@
+{
+  "bookingCode": "OPD-MR9HR5XD-Q5KN6",
+  "language": "hin",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello, कैसे हो आप?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9993288493561073
+    },
+    {
+      "speaker": "Patient",
+      "text": "मैं ठीक हूँ doctor.",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9632386755331317
+    },
+    {
+      "speaker": "Doctor",
+      "text": "तो बताइए आपको क्या हुआ है?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.999906309945913
+    },
+    {
+      "speaker": "Patient",
+      "text": "Doctor मुझे cancer है।",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.960947996580686
+    },
+    {
+      "speaker": "Doctor",
+      "text": "अच्छा ठीक है।",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9972911900629075
+    }
+  ],
+  "plainTranscript": "Doctor: Hello, कैसे हो आप?\nPatient: मैं ठीक हूँ doctor.\nDoctor: तो बताइए आपको क्या हुआ है?\nPatient: Doctor मुझे cancer है।\nDoctor: अच्छा ठीक है।",
+  "warnings": []
+}

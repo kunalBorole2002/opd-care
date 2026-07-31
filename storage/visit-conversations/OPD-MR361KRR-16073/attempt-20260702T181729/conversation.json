@@ -1,0 +1,32 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "hin",
+  "turns": [
+    {
+      "speaker": "Patient",
+      "text": "Hello doctor, कैसे हो आप?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9987794564907719
+    },
+    {
+      "speaker": "Doctor",
+      "text": "मैं बढ़िया हूँ। आप बताइए आपको क्या हुआ है?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.998358029688898
+    },
+    {
+      "speaker": "Patient",
+      "text": "Doctor मुझे left hand में fracture है और",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.9974518557946049
+    }
+  ],
+  "plainTranscript": "Patient: Hello doctor, कैसे हो आप?\nDoctor: मैं बढ़िया हूँ। आप बताइए आपको क्या हुआ है?\nPatient: Doctor मुझे left hand में fracture है और",
+  "warnings": []
+}

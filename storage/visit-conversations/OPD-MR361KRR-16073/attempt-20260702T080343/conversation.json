@@ -1,0 +1,24 @@
+{
+  "bookingCode": "OPD-MR361KRR-16073",
+  "language": "mixed",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "Hello, कैसे हूँ आप? मैं बाड़ी हूँ डॉक्टर, बताईए फिर आपको क्या हुआ है?",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.86
+    },
+    {
+      "speaker": "Patient",
+      "text": "डॉक्टर मुझे सरदी खासी हुई है",
+      "sourceChunkIndexes": [
+        1
+      ],
+      "confidence": 0.86
+    }
+  ],
+  "plainTranscript": "Doctor: Hello, कैसे हूँ आप? मैं बाड़ी हूँ डॉक्टर, बताईए फिर आपको क्या हुआ है?\nPatient: डॉक्टर मुझे सरदी खासी हुई है",
+  "warnings": []
+}

@@ -1,0 +1,16 @@
+{
+  "bookingCode": "OPD-MS7UAIZN-LMOC7",
+  "language": "sh",
+  "turns": [
+    {
+      "speaker": "Doctor",
+      "text": "[silence]",
+      "sourceChunkIndexes": [],
+      "confidence": null
+    }
+  ],
+  "plainTranscript": "Doctor: [silence]",
+  "warnings": [
+    "Scribe response contained no spoken word entries; transcript was assigned to Doctor."
+  ]
+}

@@ -1,0 +1,329 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id             String                  @id @default(cuid())
+  name           String
+  phone          String                  @unique
+  age            Int
+  gender         Gender
+  appointments   Appointment[]
+  medicalHistory PatientMedicalHistory[]
+  aiAnalyses     PatientAiAnalysis[]
+}
+
+model Doctor {
+  id               String                  @id @default(cuid())
+  name             String
+  specialty        String
+  department       String
+  experienceYears  Int
+  fee              Int
+  appointments     Appointment[]
+  aiAnalyses       PatientAiAnalysis[]
+  sessionLocations DoctorSessionLocation[]
+}
+
+model Location {
+  id             String                  @id @default(cuid())
+  name           String
+  addressLine1   String
+  locality       String
+  city           String
+  state          String
+  postalCode     String
+  appointments   Appointment[]
+  doctorSessions DoctorSessionLocation[]
+}
+
+model DoctorSessionLocation {
+  id         String     @id @default(cuid())
+  doctorId   String
+  locationId String
+  session    OpdSession
+  doctor     Doctor     @relation(fields: [doctorId], references: [id])
+  location   Location   @relation(fields: [locationId], references: [id])
+
+  @@unique([doctorId, session])
+  @@index([locationId])
+}
+
+model Appointment {
+  id               String                @id @default(cuid())
+  patientId        String
+  doctorId         String
+  locationId       String
+  followUpFromId   String?
+  startsAt         DateTime
+  visitReason      String
+  visitType        AppointmentVisitType  @default(INITIAL)
+  notes            String?
+  bookingCode      String                @unique
+  status           AppointmentStatus     @default(CONFIRMED)
+  createdAt        DateTime              @default(now())
+  doctor           Doctor                @relation(fields: [doctorId], references: [id])
+  location         Location              @relation(fields: [locationId], references: [id])
+  patient          Patient               @relation(fields: [patientId], references: [id])
+  followUpFrom     Appointment?           @relation("AppointmentFollowUps", fields: [followUpFromId], references: [id])
+  followUps        Appointment[]          @relation("AppointmentFollowUps")
+  clinicalRecord   ClinicalRecord?
+  aiAnalysis       PatientAiAnalysis?
+  recording        VisitReasonRecording?
+  conversations    VisitConversation[]
+
+  @@unique([doctorId, startsAt])
+  @@index([locationId])
+  @@index([followUpFromId])
+}
+
+model PatientAiAnalysis {
+  id                     String              @id @default(cuid())
+  appointmentId          String              @unique
+  patientId              String
+  doctorId               String
+  mode                   CopilotAnalysisMode
+  summary                String
+  vitalsAnalysisJson     String              @default("[]")
+  historyAnalysisJson    String              @default("[]")
+  riskFlagsJson          String              @default("[]")
+  suggestedQuestionsJson String              @default("[]")
+  clinicalSnapshotJson   String?
+  modelName              String
+  generatedAt            DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  appointment            Appointment         @relation(fields: [appointmentId], references: [id])
+  patient                Patient             @relation(fields: [patientId], references: [id])
+  doctor                 Doctor              @relation(fields: [doctorId], references: [id])
+
+  @@index([patientId, updatedAt])
+  @@index([doctorId, updatedAt])
+}
+
+model PatientMedicalHistory {
+  id         String   @id @default(cuid())
+  patientId  String
+  title      String
+  detail     String
+  recordedAt DateTime @default(now())
+  patient    Patient  @relation(fields: [patientId], references: [id])
+}
+
+model ClinicalRecord {
+  id                            String                        @id @default(cuid())
+  appointmentId                 String                        @unique
+  diagnosis                     String?
+  observations                  String?
+  followUpNotes                 String?
+  diagnosisAiDraft              String?
+  observationsAiDraft           String?
+  followUpNotesAiDraft          String?
+  clinicalNotesGenerationStatus ClinicalNotesGenerationStatus @default(IDLE)
+  clinicalNotesGenerationError  String?
+  clinicalNotesModelName        String?
+  clinicalNotesGeneratedAt      DateTime?
+  clinicalNotesDraftVersion     String?
+  startedAt                     DateTime?
+  completedAt                   DateTime?
+  durationSeconds               Int?
+  createdAt                     DateTime                      @default(now())
+  updatedAt                     DateTime                      @updatedAt
+  appointment                   Appointment                   @relation(fields: [appointmentId], references: [id])
+  vitals                        ClinicalVital?
+  prescriptions                 PrescriptionItem[]
+  testResults                   ClinicalTestResult[]
+}
+
+model ClinicalVital {
+  id               String         @id @default(cuid())
+  clinicalRecordId String         @unique
+  bloodPressure    String?
+  pulse            Int?
+  temperature      String?
+  spo2             Int?
+  weight           String?
+  clinicalRecord   ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
+}
+
+model PrescriptionItem {
+  id               String         @id @default(cuid())
+  clinicalRecordId String
+  medicine         String
+  dosage           String
+  route            String?
+  frequency        String
+  timing           String?
+  mealTiming       String?
+  duration         String
+  quantity         String?
+  instructions     String?
+  clinicalRecord   ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
+}
+
+model ClinicalTestResult {
+  id                 String               @id @default(cuid())
+  clinicalRecordId   String
+  testName           String
+  doctorResultNotes  String?
+  reportTitle        String?
+  labName            String?
+  specimen           String?
+  collectedAtText    String?
+  reportedAtText     String?
+  overallImpression  String?
+  rawText            String?
+  observationsJson   String               @default("[]")
+  panelsJson         String               @default("[]")
+  extractionJson     String               @default("{}")
+  extractionWarnings String               @default("[]")
+  extractionStatus   TestExtractionStatus @default(PENDING)
+  extractionError    String?
+  modelName          String?
+  extractedAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  clinicalRecord     ClinicalRecord       @relation(fields: [clinicalRecordId], references: [id])
+  images             ClinicalTestImage[]
+
+  @@index([clinicalRecordId, createdAt])
+}
+
+model ClinicalTestImage {
+  id           String             @id @default(cuid())
+  testResultId String
+  filePath     String
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  createdAt    DateTime           @default(now())
+  testResult   ClinicalTestResult @relation(fields: [testResultId], references: [id])
+}
+
+model VisitReasonRecording {
+  id                  String              @id @default(cuid())
+  appointmentId       String              @unique
+  bookingCode         String
+  filePath            String
+  mimeType            String
+  sizeBytes           Int
+  durationSeconds     Int
+  transcript          String?
+  transcriptionStatus TranscriptionStatus @default(PENDING)
+  transcriptionError  String?
+  transcribedAt       DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  appointment         Appointment         @relation(fields: [appointmentId], references: [id])
+}
+
+model VisitConversation {
+  id              String                   @id @default(cuid())
+  appointmentId   String
+  bookingCode     String
+  attemptLabel    String
+  folderPath      String
+  recordingPath   String
+  mimeType        String
+  sizeBytes       Int
+  durationSeconds Int
+  status          VisitConversationStatus  @default(UPLOADED)
+  errorMessage    String?
+  rawTranscript   String?
+  speakerJson     String?
+  plainTranscript String?
+  language        String?
+  modelName       String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  appointment     Appointment              @relation(fields: [appointmentId], references: [id])
+  chunks          VisitConversationChunk[]
+
+  @@index([appointmentId, createdAt])
+  @@index([bookingCode, createdAt])
+}
+
+model VisitConversationChunk {
+  id              String              @id @default(cuid())
+  conversationId  String
+  chunkIndex      Int
+  filePath        String
+  transcriptPath  String?
+  mimeType        String
+  sizeBytes       Int
+  durationSeconds Int?
+  transcript      String?
+  status          TranscriptionStatus @default(PENDING)
+  errorMessage    String?
+  transcribedAt   DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  conversation    VisitConversation   @relation(fields: [conversationId], references: [id])
+
+  @@unique([conversationId, chunkIndex])
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  OTHER
+}
+
+enum AppointmentStatus {
+  CONFIRMED
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  NO_SHOW
+  CANCELLED
+}
+
+enum AppointmentVisitType {
+  INITIAL
+  FOLLOW_UP
+}
+
+enum OpdSession {
+  MORNING
+  AFTERNOON
+  EVENING
+}
+
+enum CopilotAnalysisMode {
+  LOAD_ANALYSIS
+  CONSULT_ANALYSIS
+}
+
+enum TestExtractionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum TranscriptionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum VisitConversationStatus {
+  UPLOADED
+  TRANSCRIBING
+  LABELING
+  COMPLETED
+  FAILED
+}
+
+enum ClinicalNotesGenerationStatus {
+  IDLE
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

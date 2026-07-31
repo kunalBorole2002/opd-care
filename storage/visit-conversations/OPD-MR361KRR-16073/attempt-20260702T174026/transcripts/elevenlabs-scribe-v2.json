@@ -1,0 +1,497 @@
+{
+  "language_code": "eng",
+  "language_probability": 0.9772711396217346,
+  "text": "Hello. Welcome to The Clay Clinic. Please sit down. Tell me what is your disease. Hello, doctor. I have cough from three to four days. Okay, tell me more about it.",
+  "words": [
+    {
+      "text": "Hello.",
+      "start": 3.539,
+      "end": 3.879,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.003513538346548254
+    },
+    {
+      "text": " ",
+      "start": 3.879,
+      "end": 3.879,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000006556489552167477
+    },
+    {
+      "text": "Welcome",
+      "start": 6.119,
+      "end": 6.46,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000006556489552167477
+    },
+    {
+      "text": " ",
+      "start": 6.46,
+      "end": 6.559,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "to",
+      "start": 6.559,
+      "end": 6.719,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 6.719,
+      "end": 7.159,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.6329417824745178
+    },
+    {
+      "text": "The",
+      "start": 7.159,
+      "end": 7.239,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.6329417824745178
+    },
+    {
+      "text": " ",
+      "start": 7.239,
+      "end": 7.339,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.040772173553705215
+    },
+    {
+      "text": "Clay",
+      "start": 7.339,
+      "end": 7.579,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.040772173553705215
+    },
+    {
+      "text": " ",
+      "start": 7.579,
+      "end": 7.639,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0010856455191969872
+    },
+    {
+      "text": "Clinic.",
+      "start": 7.639,
+      "end": 7.98,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0009305703320663383
+    },
+    {
+      "text": " ",
+      "start": 7.98,
+      "end": 8.939,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000003933898824470816
+    },
+    {
+      "text": "Please",
+      "start": 8.939,
+      "end": 9.119,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000003933898824470816
+    },
+    {
+      "text": " ",
+      "start": 9.119,
+      "end": 9.139,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000001311301275563892
+    },
+    {
+      "text": "sit",
+      "start": 9.139,
+      "end": 9.279,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000001311301275563892
+    },
+    {
+      "text": " ",
+      "start": 9.279,
+      "end": 9.359,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "down.",
+      "start": 9.359,
+      "end": 9.699,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0000012636144674615935
+    },
+    {
+      "text": " ",
+      "start": 9.699,
+      "end": 9.699,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00012146688823122531
+    },
+    {
+      "text": "Tell",
+      "start": 12.279,
+      "end": 12.599,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.00012146688823122531
+    },
+    {
+      "text": " ",
+      "start": 12.599,
+      "end": 12.679,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "me",
+      "start": 12.679,
+      "end": 12.84,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 12.84,
+      "end": 13.019,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.000006318072337307967
+    },
+    {
+      "text": "what",
+      "start": 13.019,
+      "end": 13.319,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000006318072337307967
+    },
+    {
+      "text": " ",
+      "start": 13.319,
+      "end": 13.319,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "is",
+      "start": 14.34,
+      "end": 14.519,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 14.519,
+      "end": 14.639,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -5.960462772236497e-7
+    },
+    {
+      "text": "your",
+      "start": 14.639,
+      "end": 14.96,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -5.960462772236497e-7
+    },
+    {
+      "text": " ",
+      "start": 14.96,
+      "end": 15.42,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.00009643566590966657
+    },
+    {
+      "text": "disease.",
+      "start": 15.42,
+      "end": 15.859,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0003257108246543794
+    },
+    {
+      "text": " ",
+      "start": 15.859,
+      "end": 15.859,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0004135706985834986
+    },
+    {
+      "text": "Hello,",
+      "start": 18.219,
+      "end": 18.379,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000028212371641226735
+    },
+    {
+      "text": " ",
+      "start": 18.379,
+      "end": 18.439,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.001412823679856956
+    },
+    {
+      "text": "doctor.",
+      "start": 18.44,
+      "end": 18.819,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.0012114004425711755
+    },
+    {
+      "text": " ",
+      "start": 18.819,
+      "end": 19.019,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "I",
+      "start": 19.02,
+      "end": 19.139,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 19.139,
+      "end": 19.239,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": "have",
+      "start": 19.239,
+      "end": 19.459,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": " ",
+      "start": 19.459,
+      "end": 20.039,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.00007903263758635148
+    },
+    {
+      "text": "cough",
+      "start": 20.039,
+      "end": 20.399,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.00007903263758635148
+    },
+    {
+      "text": " ",
+      "start": 20.399,
+      "end": 20.52,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "from",
+      "start": 20.52,
+      "end": 20.84,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 20.84,
+      "end": 21.379,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": "three",
+      "start": 21.379,
+      "end": 21.539,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": " ",
+      "start": 21.539,
+      "end": 21.579,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "to",
+      "start": 21.579,
+      "end": 21.699,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 21.699,
+      "end": 21.739,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -0.000004887569048150908
+    },
+    {
+      "text": "four",
+      "start": 21.739,
+      "end": 21.879,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -0.000004887569048150908
+    },
+    {
+      "text": " ",
+      "start": 21.879,
+      "end": 21.939,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": -8.344646857949556e-7
+    },
+    {
+      "text": "days.",
+      "start": 21.939,
+      "end": 22.26,
+      "type": "word",
+      "speaker_id": "customer",
+      "logprob": -7.390973109977495e-7
+    },
+    {
+      "text": " ",
+      "start": 22.26,
+      "end": 22.26,
+      "type": "spacing",
+      "speaker_id": "customer",
+      "logprob": 0
+    },
+    {
+      "text": "Okay,",
+      "start": 24.299,
+      "end": 24.579,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.000032636994183121716
+    },
+    {
+      "text": " ",
+      "start": 24.579,
+      "end": 24.68,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0000011920922133867862
+    },
+    {
+      "text": "tell",
+      "start": 24.68,
+      "end": 24.799,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0000011920922133867862
+    },
+    {
+      "text": " ",
+      "start": 24.799,
+      "end": 24.859,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -0.0000023841830625315197
+    },
+    {
+      "text": "me",
+      "start": 24.859,
+      "end": 24.959,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.0000023841830625315197
+    },
+    {
+      "text": " ",
+      "start": 24.959,
+      "end": 25.019,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": "more",
+      "start": 25.019,
+      "end": 25.18,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": 0
+    },
+    {
+      "text": " ",
+      "start": 25.18,
+      "end": 25.239,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -3.576278118089249e-7
+    },
+    {
+      "text": "about",
+      "start": 25.239,
+      "end": 25.52,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -3.576278118089249e-7
+    },
+    {
+      "text": " ",
+      "start": 25.52,
+      "end": 25.559,
+      "type": "spacing",
+      "speaker_id": "agent",
+      "logprob": -1.1920928244535389e-7
+    },
+    {
+      "text": "it.",
+      "start": 25.559,
+      "end": 25.699,
+      "type": "word",
+      "speaker_id": "agent",
+      "logprob": -0.011217103650167815
+    }
+  ],
+  "transcription_id": "btFD9fQxY07Pailiw1RM",
+  "audio_duration_secs": 30.12
+}
