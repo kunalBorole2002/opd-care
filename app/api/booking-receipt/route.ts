@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
-import puppeteer from "puppeteer";
 import QRCode from "qrcode";
-import { prisma } from "@/lib/prisma";
+import sharp from "sharp";
 import { OPD_TIME_ZONE } from "@/lib/opd-slots";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type ReceiptRequest = {
   bookingCode?: string;
+};
+
+type ReceiptLocation = {
+  name: string;
+  addressLine1: string;
+  locality: string;
+  city: string;
+  state: string;
+  postalCode: string;
 };
 
 export async function POST(request: Request) {
@@ -32,7 +41,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Receipt was not found." }, { status: 404 });
   }
 
-  const qrImage = await QRCode.toDataURL(appointment.bookingCode, {
+  const qrBuffer = await QRCode.toBuffer(appointment.bookingCode, {
     width: 320,
     margin: 1,
     color: {
@@ -42,7 +51,7 @@ export async function POST(request: Request) {
     errorCorrectionLevel: "H",
   });
 
-  const html = buildReceiptHtml({
+  const receiptSvg = buildReceiptSvg({
     bookingCode: appointment.bookingCode,
     createdAt: appointment.createdAt,
     doctor: `${appointment.doctor.name}, ${appointment.doctor.specialty}`,
@@ -50,56 +59,27 @@ export async function POST(request: Request) {
     location: appointment.location,
     patient: appointment.patient.name,
     phone: appointment.patient.phone,
-    qrImage,
+    qrImage: `data:image/png;base64,${qrBuffer.toString("base64")}`,
     slot: appointment.startsAt,
     visitReason: appointment.visitReason,
   });
 
-  const browser = await puppeteer.launch({
-    args: [
-      "--disable-dev-shm-usage",
-      "--disable-extensions",
-      "--disable-gpu",
-      "--disable-setuid-sandbox",
-      "--font-render-hinting=none",
-      "--hide-scrollbars",
-      "--mute-audio",
-      "--no-first-run",
-      "--no-sandbox",
-    ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    headless: "shell",
-    pipe: true,
+  const image = await sharp(Buffer.from(receiptSvg), { density: 144 })
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+  const imageBuffer = new ArrayBuffer(image.byteLength);
+  new Uint8Array(imageBuffer).set(image);
+
+  return new NextResponse(new Blob([imageBuffer], { type: "image/png" }), {
+    headers: {
+      "Content-Disposition": `attachment; filename="${appointment.bookingCode}.png"`,
+      "Content-Type": "image/png",
+      "Cache-Control": "no-store",
+    },
   });
-
-  try {
-    const page = await browser.newPage();
-    await page.setViewport({ width: 920, height: 1280, deviceScaleFactor: 2 });
-    await page.setContent(html, { waitUntil: "load" });
-
-    const receipt = await page.$("#receipt");
-    if (!receipt) {
-      return NextResponse.json({ message: "Could not render receipt." }, { status: 500 });
-    }
-
-    const image = await receipt.screenshot({ type: "png" });
-    const imageBuffer = new ArrayBuffer(image.byteLength);
-    new Uint8Array(imageBuffer).set(image);
-    const imageBlob = new Blob([imageBuffer], { type: "image/png" });
-
-    return new NextResponse(imageBlob, {
-      headers: {
-        "Content-Disposition": `attachment; filename="${appointment.bookingCode}.png"`,
-        "Content-Type": "image/png",
-        "Cache-Control": "no-store",
-      },
-    });
-  } finally {
-    await browser.close();
-  }
 }
 
-function buildReceiptHtml({
+function buildReceiptSvg({
   bookingCode,
   createdAt,
   doctor,
@@ -115,14 +95,7 @@ function buildReceiptHtml({
   createdAt: Date;
   doctor: string;
   department: string;
-  location: {
-    name: string;
-    addressLine1: string;
-    locality: string;
-    city: string;
-    state: string;
-    postalCode: string;
-  };
+  location: ReceiptLocation;
   patient: string;
   phone: string;
   qrImage: string;
@@ -139,102 +112,93 @@ function buildReceiptHtml({
     ["Visit reason", visitReason],
     ["Issued", formatDateTime(createdAt)],
   ];
+  const detailCards = details
+    .map(([label, value], index) => {
+      const column = index % 2;
+      const row = Math.floor(index / 2);
+      return renderDetailCard(label, value, 70 + column * 540, 610 + row * 145);
+    })
+    .join("");
 
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${escapeHtml(bookingCode)} Receipt</title>
-    <style>
-      * { box-sizing: border-box; }
-      html, body { margin: 0; background: #eef5ff; color: #172033; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
-      body { padding: 32px; }
-      .receipt { width: 820px; overflow: hidden; border: 1px solid #cdddf2; border-radius: 8px; background: #ffffff; box-shadow: 0 24px 70px rgba(15, 23, 42, 0.16); }
-      .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; padding: 34px 38px; background: linear-gradient(135deg, #eff6ff 0%, #eff6ff 58%, #eff6ff 100%); border-bottom: 1px solid #dbeafe; }
-      .brand { display: flex; min-width: 0; align-items: center; gap: 18px; }
-      .brand-mark { display: flex; width: 60px; height: 60px; flex: 0 0 auto; align-items: center; justify-content: center; border-radius: 8px; background: #1d4ed8; color: #ffffff; box-shadow: 0 14px 26px rgba(29, 78, 216, 0.25); }
-      .eyebrow { margin: 0; color: #1d4ed8; font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
-      h1 { margin: 6px 0 0; color: #172033; font-size: 31px; font-weight: 850; line-height: 1.12; letter-spacing: 0; }
-      .status { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #bbf7d0; border-radius: 999px; background: #f0fdf4; color: #166534; padding: 9px 15px; font-size: 13px; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
-      .status-dot { width: 8px; height: 8px; border-radius: 999px; background: #16a34a; }
-      .body { display: grid; gap: 22px; padding: 30px 38px 36px; }
-      .hero { display: grid; grid-template-columns: 188px minmax(0, 1fr); gap: 24px; align-items: center; border: 1px solid #dbeafe; border-radius: 8px; background: #f8fbff; padding: 22px; }
-      .qr-shell { display: flex; width: 168px; height: 168px; align-items: center; justify-content: center; border: 1px solid #dbeafe; border-radius: 8px; background: #ffffff; padding: 12px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08); }
-      .qr-shell img { width: 100%; height: 100%; object-fit: contain; display: block; }
-      .slot-label { margin: 0; color: #64748b; font-size: 12px; font-weight: 850; letter-spacing: 0.14em; text-transform: uppercase; }
-      .slot { margin: 8px 0 0; color: #0f172a; font-size: 30px; font-weight: 850; line-height: 1.18; letter-spacing: 0; }
-      .reference { margin: 14px 0 0; color: #475569; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 14px; font-weight: 800; overflow-wrap: anywhere; }
-      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-      .detail { min-width: 0; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; padding: 14px 16px; }
-      .detail-label { margin: 0; color: #64748b; font-size: 11px; font-weight: 850; letter-spacing: 0.13em; text-transform: uppercase; }
-      .detail-value { margin: 5px 0 0; color: #172033; font-size: 16px; font-weight: 800; line-height: 1.38; overflow-wrap: anywhere; }
-      .instructions { border: 1px solid #dbeafe; border-radius: 8px; background: #f8fbff; padding: 18px; }
-      .instructions-title { display: flex; align-items: center; gap: 9px; margin: 0; color: #172033; font-size: 16px; font-weight: 850; }
-      .shield { display: flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 16px; }
-      .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-      .step { display: flex; align-items: flex-start; gap: 9px; border-radius: 8px; background: #ffffff; padding: 11px 12px; color: #475569; font-size: 13px; font-weight: 750; line-height: 1.45; }
-      .check { color: #1d4ed8; font-weight: 900; }
-      .footer { display: flex; justify-content: space-between; gap: 18px; border-top: 1px solid #e2e8f0; padding-top: 18px; color: #64748b; font-size: 12px; font-weight: 700; line-height: 1.45; }
-    </style>
-  </head>
-  <body>
-    <main id="receipt" class="receipt">
-      <section class="header">
-        <div class="brand">
-          <div class="brand-mark" aria-hidden="true">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
-              <path d="M3.22 12H9.5l.9-2.7 2.1 6.4 1.3-3.7h6.98" />
-            </svg>
-          </div>
-          <div>
-            <p class="eyebrow">CityCare Practitioner Network</p>
-            <h1>OPD Appointment Receipt</h1>
-          </div>
-        </div>
-      </section>
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+  <rect width="1200" height="1500" fill="#eef5ff"/>
+  <rect x="40" y="35" width="1120" height="1430" rx="28" fill="#ffffff" stroke="#cdddf2" stroke-width="2"/>
 
-      <section class="body">
-        <div class="hero">
-          <div class="qr-shell">
-            <img src="${qrImage}" alt="Booking QR code" />
-          </div>
-          <div>
-            <p class="slot-label">Appointment time</p>
-            <p class="slot">${escapeHtml(formatDateTime(slot))}</p>
-            <p class="reference">Ref: ${escapeHtml(bookingCode)}</p>
-          </div>
-        </div>
+  <path d="M68 35h1064a28 28 0 0 1 28 28v180H40V63a28 28 0 0 1 28-28z" fill="#eff6ff"/>
+  <rect x="74" y="84" width="82" height="82" rx="20" fill="#1d4ed8"/>
+  <path d="M115 105c-18-20-42 4-24 23l24 24 24-24c18-19-6-43-24-23z" fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+  <text x="184" y="105" fill="#1d4ed8" font-family="Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3">CITYCARE PRACTITIONER NETWORK</text>
+  <text x="184" y="153" fill="#172033" font-family="Arial, sans-serif" font-size="42" font-weight="700">OPD Appointment Receipt</text>
+  <rect x="916" y="97" width="180" height="52" rx="26" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <circle cx="947" cy="123" r="8" fill="#16a34a"/>
+  <text x="970" y="131" fill="#166534" font-family="Arial, sans-serif" font-size="20" font-weight="700">CONFIRMED</text>
 
-        <div class="grid">
-          ${details
-            .map(
-              ([label, value]) => `<div class="detail">
-            <p class="detail-label">${escapeHtml(label)}</p>
-            <p class="detail-value">${escapeHtml(value)}</p>
-          </div>`,
-            )
-            .join("")}
-        </div>
+  <rect x="70" y="280" width="1060" height="285" rx="24" fill="#f8fbff" stroke="#dbeafe" stroke-width="2"/>
+  <rect x="105" y="315" width="215" height="215" rx="18" fill="#ffffff" stroke="#dbeafe" stroke-width="2"/>
+  <image href="${qrImage}" x="120" y="330" width="185" height="185"/>
+  <text x="370" y="354" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">APPOINTMENT TIME</text>
+  ${renderText(formatDateTime(slot), 370, 410, 42, 36, 2, "#0f172a", 700)}
+  <text x="370" y="505" fill="#475569" font-family="monospace" font-size="24" font-weight="700">Ref: ${escapeXml(bookingCode)}</text>
 
-        <div class="instructions">
-          <p class="instructions-title"><span class="shield">+</span> Reception instructions</p>
-          <div class="steps">
-            ${["Show this receipt at reception.", "Carry a valid ID.", "Arrive 10 minutes early.", "Keep the QR/reference code visible."]
-              .map((step) => `<div class="step"><span class="check">&#10003;</span><span>${escapeHtml(step)}</span></div>`)
-              .join("")}
-          </div>
-        </div>
+  ${detailCards}
 
-        <div class="footer">
-          <span>No cash collected in this booking flow unless shown separately at hospital billing.</span>
-          <span>Generated securely by CityCare Practitioner Network.</span>
-        </div>
-      </section>
-    </main>
-  </body>
-</html>`;
+  <rect x="70" y="1210" width="1060" height="165" rx="22" fill="#f8fbff" stroke="#dbeafe" stroke-width="2"/>
+  <circle cx="112" cy="1255" r="22" fill="#dbeafe"/>
+  <text x="104" y="1264" fill="#1d4ed8" font-family="Arial, sans-serif" font-size="28" font-weight="700">+</text>
+  <text x="150" y="1264" fill="#172033" font-family="Arial, sans-serif" font-size="25" font-weight="700">Reception instructions</text>
+  <text x="105" y="1315" fill="#475569" font-family="Arial, sans-serif" font-size="20">✓ Show this receipt at reception.</text>
+  <text x="600" y="1315" fill="#475569" font-family="Arial, sans-serif" font-size="20">✓ Carry a valid ID.</text>
+  <text x="105" y="1350" fill="#475569" font-family="Arial, sans-serif" font-size="20">✓ Arrive 10 minutes early.</text>
+  <text x="600" y="1350" fill="#475569" font-family="Arial, sans-serif" font-size="20">✓ Keep the QR code visible.</text>
+
+  <line x1="70" y1="1405" x2="1130" y2="1405" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="70" y="1440" fill="#64748b" font-family="Arial, sans-serif" font-size="16">Generated securely by CityCare Practitioner Network.</text>
+</svg>`;
+}
+
+function renderDetailCard(label: string, value: string, x: number, y: number) {
+  return `<rect x="${x}" y="${y}" width="520" height="125" rx="18" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="${x + 24}" y="${y + 34}" fill="#64748b" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="2">${escapeXml(label.toUpperCase())}</text>
+  ${renderText(value || "—", x + 24, y + 72, 23, 32, 2, "#172033", 700)}`;
+}
+
+function renderText(
+  value: string,
+  x: number,
+  y: number,
+  fontSize: number,
+  lineHeight: number,
+  maxLines: number,
+  color: string,
+  fontWeight: number,
+) {
+  const maxCharacters = Math.max(12, Math.floor(475 / (fontSize * 0.56)));
+  const lines = wrapText(value, maxCharacters, maxLines);
+  return `<text x="${x}" y="${y}" fill="${color}" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="${fontWeight}">${lines
+    .map((line, index) => `<tspan x="${x}" dy="${index === 0 ? 0 : lineHeight}">${escapeXml(line)}</tspan>`)
+    .join("")}</text>`;
+}
+
+function wrapText(value: string, maxCharacters: number, maxLines: number) {
+  const words = value.trim().replace(/\s+/g, " ").split(" ").filter(Boolean);
+  const lines: string[] = [];
+
+  for (const word of words) {
+    const current = lines.at(-1);
+    if (!current || current.length + word.length + 1 > maxCharacters) {
+      if (lines.length === maxLines) {
+        const last = lines[maxLines - 1];
+        lines[maxLines - 1] = `${last.slice(0, Math.max(1, maxCharacters - 1))}…`;
+        break;
+      }
+      lines.push(word.slice(0, maxCharacters));
+    } else {
+      lines[lines.length - 1] = `${current} ${word}`;
+    }
+  }
+
+  return lines.length ? lines : ["—"];
 }
 
 function formatDateTime(value: Date) {
@@ -249,24 +213,18 @@ function formatDateTime(value: Date) {
   }).format(value);
 }
 
-function formatAddress(location: {
-  addressLine1: string;
-  locality: string;
-  city: string;
-  state: string;
-  postalCode: string;
-}) {
+function formatAddress(location: ReceiptLocation) {
   return [location.addressLine1, location.locality, location.city, location.state, location.postalCode]
     .map((part) => part.trim())
     .filter(Boolean)
     .join(", ");
 }
 
-function escapeHtml(value: string) {
+function escapeXml(value: string) {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/'/g, "&apos;");
 }
